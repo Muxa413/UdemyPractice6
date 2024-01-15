@@ -27,15 +27,38 @@ const movieDB = {
 };
 
 const
-  promoAdv = document.querySelector('.promo__adv'),
-  promoGenre = document.querySelector('.promo__genre'),  
-  promoBg = document.querySelector('.promo__bg');
+  // promoAdv = document.querySelector('.promo__adv'),
+  promoAdvImg = document.querySelectorAll('.promo__adv img'),
+  promoBg = document.querySelector('.promo__bg'),
+  promoGenre = promoBg.querySelector('.promo__genre'),
+  moveList = document.querySelector('.promo__interactive-list');
+  
   
 // #1
-promoAdv.remove();
+
+// promoAdv.remove();
+
+promoAdvImg.forEach(item => {
+  item.remove();
+});
+
 // #2
 promoGenre.textContent = 'ДРАМА';
+
 // #3
 let bg = 'bg.jpg';
 promoBg.style.background = `url(../img/${bg})`;
-// #4
+
+// #4, 5
+
+moveList.innerHTML = '';
+
+movieDB.movies.sort();
+
+movieDB.movies.forEach((film, i) => {
+  moveList.innerHTML += `
+    <li class="promo__interactive-item">${i + 1}) ${film}
+      <div class="delete"></div>
+    </li>
+  `;
+});
