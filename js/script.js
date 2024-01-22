@@ -29,29 +29,20 @@ const movieDB = {
 };
 
 const
-  // promoAdv = document.querySelector('.promo__adv'),
   promoAdvImg = document.querySelectorAll('.promo__adv img'),
   promoBg = document.querySelector('.promo__bg'),
   promoGenre = promoBg.querySelector('.promo__genre'),
   moveList = document.querySelector('.promo__interactive-list');
-  
-  
-// #1
 
-// promoAdv.remove();
 
 promoAdvImg.forEach(item => {
   item.remove();
 });
 
-// #2
 promoGenre.textContent = 'ДРАМА';
 
-// #3
 let newBG = 'bg.jpg';
 promoBg.style.background = `url(../img/${newBG})`;
-
-// #4, 5
 
 moveList.innerHTML = '';
 
@@ -64,3 +55,37 @@ movieDB.movies.forEach((film, i) => {
     </li>
   `;
 });
+
+// # 1, 2, 5
+
+const
+  btn = document.querySelector('button'),
+  input = document.querySelector('.adding__input');
+
+const msBtn = (event) => {
+  event.preventDefault();
+
+  if (input.value != "" && input.value != null && input.value != NaN) {
+
+    if (input.value.length > 21) {
+      movieDB.movies.push(`${input.value.slice(0, 21)}...`)
+    } else {
+      movieDB.movies.push(input.value)
+    };
+
+  };
+
+  moveList.innerHTML = '';
+
+  movieDB.movies.sort();
+
+  movieDB.movies.forEach((film, i) => {
+    moveList.innerHTML += `
+      <li class="promo__interactive-item">${i + 1}) ${film}
+        <div class="delete"></div>
+      </li>
+    `;
+  });
+};
+
+btn.addEventListener('click', msBtn);
