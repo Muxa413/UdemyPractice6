@@ -18,74 +18,94 @@ P.S. Здесь есть несколько вариантов решения з
 // Возьмите свой код из предыдущей практики
 'use strict';
 
-const movieDB = {
-  movies: [
-    "Логан",
-    "Лига справедливости",
-    "Ла-ла лэнд",
-    "Одержимость",
-    "Скотт Пилигрим против..."
-  ]
-};
+document.addEventListener('DOMContentLoaded', () => {
 
-const
-  promoAdvImg = document.querySelectorAll('.promo__adv img'),
-  promoBg = document.querySelector('.promo__bg'),
-  promoGenre = promoBg.querySelector('.promo__genre'),
-  moveList = document.querySelector('.promo__interactive-list');
-
-
-promoAdvImg.forEach(item => {
-  item.remove();
-});
-
-promoGenre.textContent = 'ДРАМА';
-
-let newBG = 'bg.jpg';
-promoBg.style.background = `url(../img/${newBG})`;
-
-moveList.innerHTML = '';
-
-movieDB.movies.sort();
-
-movieDB.movies.forEach((film, i) => {
-  moveList.innerHTML += `
-    <li class="promo__interactive-item">${i + 1}) ${film}
-      <div class="delete"></div>
-    </li>
-  `;
-});
-
-// # 1, 2, 5
-
-const
-  btn = document.querySelector('button'),
-  input = document.querySelector('.adding__input');
-
-const msBtn = (event) => {
-  event.preventDefault();
-
-  if (input.value != "" && input.value != null && input.value != NaN) {
-
-    if (input.value.length > 21) {
-      movieDB.movies.push(`${input.value.slice(0, 21)}...`)
-    } else {
-      movieDB.movies.push(input.value)
-    };
-
+  const movieDB = {
+    movies: [
+      "Логан",
+      "Лига справедливости",
+      "Ла-ла лэнд",
+      "Одержимость",
+      "Скотт Пилигрим против..."
+    ]
   };
 
-  moveList.innerHTML = '';
+  const
+    adv = document.querySelectorAll('.promo__adv img'),
+    promoBg = document.querySelector('.promo__bg'),
+    promoGenre = promoBg.querySelector('.promo__genre'),
+    moveList = document.querySelector('.promo__interactive-list');
 
-  movieDB.movies.sort();
+  const deleteAdv = (arr) => {
+    arr.forEach(item => {
+      item.remove();
+    });
+  };
+  const makeChanges = (genre, background) => {
+    genre.textContent = 'ДРАМА';
 
-  movieDB.movies.forEach((film, i) => {
-    moveList.innerHTML += `
-      <li class="promo__interactive-item">${i + 1}) ${film}
-        <div class="delete"></div>
-      </li>
-    `;
-  });
-};
+    let newBG = 'bg.jpg';
+    background.style.background = `url(../img/${newBG})`;
+  };
+  const sortArr = (arr) => {
+    arr.sort();
+  };
+  
+  function createMovieList(films, parent) {
+    parent.innerHTML = '';
 
-btn.addEventListener('click', msBtn);
+    sortArr(films);
+
+    films.forEach((film, i) => {
+      parent.innerHTML += `
+        <li class="promo__interactive-item">${i + 1}) ${film}
+          <div class="delete"></div>
+        </li>
+      `;
+    });
+
+    document.querySelectorAll('.delete').forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        btn.parentElement.remove();
+        movieDB.movies.splice(i, 1);
+        createMovieList(films, parent);
+      })
+    });    
+  };
+
+  const
+    addForm = document.querySelector('form.add'),
+    addInput = addForm.querySelector('.adding__input'),
+    checkbox = addForm.querySelector('[type = "checkbox"]');
+
+  const addFilm = (event) => {
+    event.preventDefault();
+
+    const
+      newFilm = addInput.value,
+      favorite = checkbox.checked;
+
+    if (newFilm != "" && newFilm != null && newFilm != NaN) {
+
+      if (favorite) {
+        console.log('Добавляем любимый фильм')
+      };
+
+      if (newFilm.length > 21) {
+        movieDB.movies.push(`${newFilm.slice(0, 21)}...`)
+      } else {
+        movieDB.movies.push(newFilm)
+      };
+
+      sortArr(movieDB.movies);
+      createMovieList(movieDB.movies, moveList);
+      event.target.reset();
+    };
+  };
+
+  addForm.addEventListener('submit', addFilm);
+
+  deleteAdv(adv);
+  makeChanges(promoGenre, promoBg);  
+  createMovieList(movieDB.movies, moveList);
+});
